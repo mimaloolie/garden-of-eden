@@ -8,6 +8,7 @@
         :root {
             --bg-color: #121214;
             --card-bg: #1a1a1e;
+            --modal-bg: #16161a;
             --text-main: #e2e8f0;
             --text-muted: #94a3b8;
             --accent: #8b5cf6; /* Neon violet theme */
@@ -78,6 +79,7 @@
             transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
             flex-direction: column;
+            cursor: pointer;
         }
 
         .char-card:hover {
@@ -145,20 +147,140 @@
             border: 1px solid rgba(139, 92, 246, 0.2);
         }
 
-        /* Hide cards when filtered */
         .char-card.hidden {
             display: none;
+        }
+
+        /* --- POPUP MODAL OVERLAY --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-container {
+            background: var(--modal-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.open .modal-container {
+            transform: translateY(0);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            color: var(--accent);
+        }
+
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 650px) {
+            .modal-content {
+                flex-direction: row;
+            }
+        }
+
+        .modal-left {
+            flex: 1;
+            max-width: 300px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        @media (min-width: 650px) {
+            .modal-left {
+                border-bottom: none;
+                border-right: 1px solid var(--border);
+            }
+        }
+
+        .modal-right {
+            flex: 2;
+            padding: 2rem;
+        }
+
+        .modal-img {
+            width: 100%;
+            height: 100%;
+            max-height: 450px;
+            object-fit: cover;
+            object-position: top center;
+        }
+
+        /* Modal Lore Layout styles */
+        .section-title {
+            color: var(--accent);
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 4px;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item strong {
+            color: var(--text-muted);
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Garden of Eden</h1>
-        <p style="color: var(--text-muted);">Archive of original characters</p>
+        <h1>Roleplay Character Archive</h1>
+        <p style="color: var(--text-muted);">Click a card to read full files and codex lore</p>
     </header>
 
-    <!-- Faction / Story Filters -->
+    <!-- Faction Filters -->
     <div class="filter-nav">
         <button class="filter-btn active" onclick="filterSelection('all')">All OCs</button>
         <button class="filter-btn" onclick="filterSelection('protagonist')">Protagonists</button>
@@ -169,25 +291,24 @@
     <!-- Character Grid -->
     <div class="character-grid">
 
-        <!-- Character 1 -->
-        <div class="char-card protagonist">
+        <!-- Character 1 Card -->
+        <div class="char-card protagonist" onclick="openModal('char-alice')">
             <div class="char-img-container">
-                <!-- Place your image file paths here -->
-                <img src="assets/avatars/1female,  Style Tags__three-quarter view, head turned slightly to the side, biti s-1827811207_upscale.png" alt="Eve" class="char-img" onerror="assets/avatars/1female,  Style Tags__three-quarter view, head turned slightly to the side, biti s-1827811207_upscale.png'">
+                <img src="assets/avatars/alice.png" alt="Alice Vance" class="char-img" onerror="this.src='https://placeholder.com'">
             </div>
             <div class="char-info">
-                <h2 class="char-name">Eve</h2>
-                <div class="char-meta">Age ?? • Vampire (?) • Pharmecutical CEO Assistant</div>
-                <p class="char-desc">A mysterious, stoic woman with devotion to her job and the CEO.</p>
+                <h2 class="char-name">Alice Vance</h2>
+                <div class="char-meta">Age 24 • Human • Mage</div>
+                <p class="char-desc">A resourceful spellcaster traveling the outskirts of the kingdom. Quiet but fiercely protective of her companions.</p>
                 <div class="char-tags">
                     <span class="tag">Silver Hair</span>
-                    <span class="tag">Single</span>
+                    <span class="tag">Active RP</span>
                 </div>
             </div>
         </div>
 
-        <!-- Character 2 -->
-        <div class="char-card antagonist">
+        <!-- Character 2 Card -->
+        <div class="char-card antagonist" onclick="openModal('char-octavius')">
             <div class="char-img-container">
                 <img src="assets/avatars/octavius.png" alt="Duke Octavius" class="char-img" onerror="this.src='https://placeholder.com'">
             </div>
@@ -204,30 +325,11 @@
 
     </div>
 
-    <!-- Filtering Logic Script -->
-    <script>
-        function filterSelection(category) {
-            const cards = document.querySelectorAll('.char-card');
-            const buttons = document.querySelectorAll('.filter-btn');
-            
-            // Handle active button class
-            buttons.forEach(btn => {
-                if (btn.textContent.toLowerCase().includes(category) || (category === 'all' && btn.textContent === 'All OCs')) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-
-            // Filter cards
-            cards.forEach(card => {
-                if (category === 'all' || card.classList.contains(category)) {
-                    card.classList.remove('hidden');
-                } else {
-                    card.classList.add('hidden');
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+    <!-- --- POPUP MODALS DATA REGISTRY --- -->
+    
+    <!-- Alice's Expanded Profile Modal -->
+    <div id="char-alice" class="modal-overlay" onclick="closeModal(event, this)">
+        <div class="modal-container">
+            <button class="close-btn" onclick="document.getElementById('char-alice').classList.remove('open')">&times;</button>
+            <div class="modal-content">
+                <div class="modal-left">
