@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OC Archive</title>
+    <style>
+        :root {
+            --bg-color: #121214;
+            --card-bg: #1a1a1e;
+            --text-main: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #8b5cf6; /* Neon violet theme */
+            --border: #2e2e38;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Filter Controls */
+        .filter-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Grid Layout */
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Character Card */
+        .char-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .char-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .char-img-container {
+            width: 100%;
+            height: 320px;
+            background: #252529;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .char-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+        }
+
+        .char-info {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .char-name {
+            font-size: 1.4rem;
+            margin: 0 0 0.5rem 0;
+            font-weight: 600;
+        }
+
+        .char-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .char-desc {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-main);
+            margin: 0 0 1.5rem 0;
+            flex-grow: 1;
+        }
+
+        .char-tags {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent);
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        /* Hide cards when filtered */
+        .char-card.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Roleplay Character Archive</h1>
+        <p style="color: var(--text-muted);">A codex of original characters</p>
+    </header>
+
+    <!-- Faction / Story Filters -->
+    <div class="filter-nav">
+        <button class="filter-btn active" onclick="filterSelection('all')">All OCs</button>
+        <button class="filter-btn" onclick="filterSelection('protagonist')">Protagonists</button>
+        <button class="filter-btn" onclick="filterSelection('antagonist')">Antagonists</button>
+        <button class="filter-btn" onclick="filterSelection('neutral')">Neutral / NPCs</button>
+    </div>
+
+    <!-- Character Grid -->
+    <div class="character-grid">
+
+        <!-- Character 1 -->
+        <div class="char-card protagonist">
+            <div class="char-img-container">
+                <!-- Place your image file paths here -->
+                <img src="assets/avatars/alice.png" alt="Alice Vance" class="char-img" onerror="this.src='https://placeholder.com'">
+            </div>
+            <div class="char-info">
+                <h2 class="char-name">Alice Vance</h2>
+                <div class="char-meta">Age 24 • Human • Mage</div>
+                <p class="char-desc">A resourceful spellcaster traveling the outskirts of the kingdom. Quiet but fiercely protective of her companions.</p>
+                <div class="char-tags">
+                    <span class="tag">Silver Hair</span>
+                    <span class="tag">Active RP</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Character 2 -->
+        <div class="char-card antagonist">
+            <div class="char-img-container">
+                <img src="assets/avatars/octavius.png" alt="Duke Octavius" class="char-img" onerror="this.src='https://placeholder.com'">
+            </div>
+            <div class="char-info">
+                <h2 class="char-name">Duke Octavius</h2>
+                <div class="char-meta">Age Unknown • Vampire • Noble</div>
+                <p class="char-desc">The elegant patriarch of an ancient, aristocratic household. Orchestrates political games from the shadows of his estate.</p>
+                <div class="char-tags">
+                    <span class="tag">Elegant</span>
+                    <span class="tag">Vampire Lord</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Filtering Logic Script -->
+    <script>
+        function filterSelection(category) {
+            const cards = document.querySelectorAll('.char-card');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            // Handle active button class
+            buttons.forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(category) || (category === 'all' && btn.textContent === 'All OCs')) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Filter cards
+            cards.forEach(card => {
+                if (category === 'all' || card.classList.contains(category)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
