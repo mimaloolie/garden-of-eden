@@ -324,3 +324,92 @@
                 aiPrompt: "1girl, solo, Rhea, flowing fabric, olive trees, warm sunlight, detailed illustration, highres"
             },
             {
+
+            name: "Leonidas",
+role: "Title / Archetype",
+image: "placehold.co",
+basicInfo: {
+"Age": "28",
+"Origin": "Sparta / Greece",
+"Traits": "Stoic, protective"
+},
+backstory: "Write Leonidas's full backstory here.",
+aiPrompt: "1boy, solo, tall muscular build, bronze accents, Mediterranean coast, dramatic shadows, highres"
+},
+{
+name: "Amélie",
+role: "Title / Archetype",
+image: "placehold.co",
+basicInfo: {
+"Age": "22",
+"Origin": "France",
+"Traits": "Artistic, daydreamer"
+},
+backstory: "Write Amélie's full backstory here.",
+aiPrompt: "1girl, solo, Amélie, vintage fashion, soft watercolor style, morning window light, highres"
+},
+{
+name: "Amamiya Seiu",
+role: "Title / Archetype",
+image: "placehold.co",
+basicInfo: {
+"Age": "20",
+"Origin": "Japan",
+"Traits": "Calm, gentle"
+},
+backstory: "Write Amamiya Seiu's full backstory here.",
+aiPrompt: "1boy, solo, Amamiya Seiu, rain motif, blue accents, serene expression, anime aesthetic, highres"
+}
+];
+// ==========================================
+// RENDER & INTERACTION LOGIC
+// ==========================================
+const cardGrid = document.getElementById("cardGrid");
+const modalOverlay = document.getElementById("modalOverlay");
+function renderCards() {
+cardGrid.innerHTML = "";
+characters.forEach((char, index) => {
+const basicItems = Object.entries(char.basicInfo)
+.map(([key, val]) => <li><strong>${key}:</strong> ${val}</li>)
+.join("");
+const card = document.createElement("div");
+card.className = "oc-card";
+card.onclick = () => openModal(index);
+card.innerHTML = <img class="card-img" src="${char.image}" alt="${char.name}"> <div class="card-compact-body"> <div class="card-subtitle">${char.role}</div> <h2>${char.name}</h2> <ul class="card-basic-list">${basicItems}</ul> <div class="click-hint">Click to expand →</div> </div>;
+cardGrid.appendChild(card);
+});
+}
+function openModal(index) {
+const char = characters[index];
+document.getElementById("modalImg").src = char.image;
+document.getElementById("modalRole").textContent = char.role;
+document.getElementById("modalName").textContent = char.name;
+document.getElementById("modalBackstory").textContent = char.backstory;
+document.getElementById("modalPrompt").textContent = char.aiPrompt;
+const basicItems = Object.entries(char.basicInfo)
+.map(([key, val]) => <li><strong>${key}:</strong> ${val}</li>)
+.join("");
+document.getElementById("modalBasicInfo").innerHTML = basicItems;
+document.getElementById("copyBtn").textContent = "Copy Prompt";
+modalOverlay.classList.add("active");
+}
+function closeModal() {
+modalOverlay.classList.remove("active");
+}
+function closeModalOnBg(event) {
+if (event.target === modalOverlay) {
+closeModal();
+}
+}
+function copyPrompt() {
+const promptText = document.getElementById("modalPrompt").textContent;
+navigator.clipboard.writeText(promptText).then(() => {
+const btn = document.getElementById("copyBtn");
+btn.textContent = "Copied!";
+setTimeout(() => btn.textContent = "Copy Prompt", 2000);
+});
+}
+document.addEventListener("keydown", (e) => {
+if (e.key === "Escape") closeModal();
+});
+renderCards();
