@@ -1,287 +1,248 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OC Archive</title>
+    <title>Garden of Eden</title>
     <style>
         :root {
-            --bg-color: #ffffff;
-            --card-bg: #f8fafc;
-            --modal-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --accent: #1e293b; /* Deep charcoal/black accent */
-            --border: #e2e8f0;
+            --bg-pastel-blue: #EBF5FB;
+            --card-bg: #FFFFFF;
+            --card-hover: #F8FCFF;
+            --text-black: #111111;
+            --text-muted: #444444;
+            --border-color: #5D8AA8; /* Muted Slate-Teal Border */
+            --accent-tint: #D6EAF8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 2rem;
+            background-color: var(--bg-pastel-blue);
+            color: var(--text-black);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            padding: 40px 20px;
         }
 
+        /* Header */
         header {
             text-align: center;
-            margin-bottom: 3rem;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 1.5rem;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
         }
 
         header h1 {
             font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 800;
-        }
-
-        /* Filter Controls */
-        .filter-nav {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 2.5rem;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            background: var(--bg-color);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.8rem;
             letter-spacing: 1px;
-            transition: all 0.2s ease;
+            font-weight: 700;
         }
 
-        .filter-btn:hover, .filter-btn.active {
-            background: var(--accent);
-            color: var(--bg-color);
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 5px;
         }
 
-        /* Grid Layout */
-        .character-grid {
+        /* Grid Layout for Compact Cards */
+        .archive-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
+            gap: 24px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
-        /* Character Card */
-        .char-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 0px; /* Sharp modern look for black & white theme */
+        /* Compact Card Styling */
+        .oc-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
             overflow: hidden;
-            transition: transform 0.2s, border-color 0.2s;
-            display: flex;
-            flex-direction: column;
             cursor: pointer;
-        }
-
-        .char-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent);
-        }
-
-        .char-img-container {
-            width: 100%;
-            height: 320px;
-            background: #f1f5f9;
-            position: relative;
-            overflow: hidden;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .char-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top center;
-        }
-
-        .char-info {
-            padding: 1.5rem;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
         }
 
-        .char-name {
-            font-size: 1.4rem;
-            margin: 0 0 0.5rem 0;
-            font-weight: 700;
-            letter-spacing: -0.5px;
+        .oc-card:hover {
+            transform: translateY(-4px);
+            background-color: var(--card-hover);
+            box-shadow: 0 6px 14px rgba(93, 138, 168, 0.25);
         }
 
-        .char-meta {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 1rem;
-            font-weight: 500;
-        }
-
-        .char-desc {
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: var(--text-main);
-            margin: 0 0 1.5rem 0;
-            flex-grow: 1;
-        }
-
-        .char-tags {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-        }
-
-        .tag {
-            background: #e2e8f0;
-            color: var(--accent);
-            font-size: 0.75rem;
-            padding: 4px 8px;
-            border-radius: 2px;
-            font-weight: 600;
-        }
-
-        .char-card.hidden {
-            display: none;
-        }
-
-        /* --- POPUP MODAL OVERLAY --- */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .card-img {
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.4); /* Softer black overlay for light mode */
-            backdrop-filter: blur(4px);
-            display: flex;
+            height: 240px;
+            object-fit: cover;
+            background-color: var(--accent-tint);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .card-compact-body {
+            padding: 18px;
+        }
+
+        .card-compact-body h2 {
+            font-size: 1.35rem;
+            margin-bottom: 4px;
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--border-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .card-basic-list {
+            list-style: none;
+            font-size: 0.9rem;
+        }
+
+        .card-basic-list li {
+            margin-bottom: 3px;
+        }
+
+        .click-hint {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: underline;
+            color: var(--text-black);
+        }
+
+        /* Expanded Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(17, 17, 17, 0.55);
+            z-index: 1000;
             justify-content: center;
             align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.25s ease;
-            z-index: 1000;
-            padding: 1rem;
-            box-sizing: border-box;
+            padding: 20px;
         }
 
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
+        .modal-overlay.active {
+            display: flex;
         }
 
-        .modal-container {
-            background: var(--modal-bg);
-            border: 2px solid var(--accent);
-            border-radius: 0px;
+        /* Expanded Card */
+        .modal-card {
+            background-color: var(--card-bg);
+            border: 3px solid var(--border-color);
+            border-radius: 10px;
+            max-width: 750px;
             width: 100%;
-            max-width: 800px;
             max-height: 90vh;
             overflow-y: auto;
+            padding: 30px;
             position: relative;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            transform: scale(0.95);
-            transition: transform 0.25s ease;
-        }
-
-        .modal-overlay.open .modal-container {
-            transform: scale(1);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
         }
 
         .close-btn {
             position: absolute;
-            top: 10px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: var(--text-main);
-            font-size: 2rem;
+            top: 18px;
+            right: 20px;
+            background: var(--bg-pastel-blue);
+            border: 2px solid var(--border-color);
+            color: var(--text-black);
+            font-size: 1.1rem;
+            font-weight: bold;
+            width: 34px;
+            height: 34px;
+            border-radius: 6px;
             cursor: pointer;
-            z-index: 10;
-            font-weight: 300;
         }
 
         .close-btn:hover {
-            color: var(--text-muted);
+            background-color: var(--accent-tint);
         }
 
-        .modal-content {
+        .modal-header {
             display: flex;
-            flex-direction: column;
-        }
-
-        @media (min-width: 650px) {
-            .modal-content {
-                flex-direction: row;
-            }
-        }
-
-        .modal-left {
-            flex: 1;
-            max-width: 300px;
-            border-bottom: 1px solid var(--border);
-            background: #f8fafc;
-        }
-
-        @media (min-width: 650px) {
-            .modal-left {
-                border-bottom: none;
-                border-right: 1px solid var(--border);
-            }
-        }
-
-        .modal-right {
-            flex: 2;
-            padding: 2rem;
+            gap: 24px;
+            align-items: center;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 20px;
         }
 
         .modal-img {
-            width: 100%;
-            height: 100%;
-            max-height: 450px;
+            width: 140px;
+            height: 140px;
             object-fit: cover;
-            object-position: top center;
+            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            background-color: var(--accent-tint);
+            flex-shrink: 0;
         }
 
-        .section-title {
-            color: var(--accent);
-            font-size: 1rem;
+        .modal-title-area h2 {
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+
+        .modal-section {
+            margin-bottom: 22px;
+        }
+
+        .modal-section h3 {
+            font-size: 1.05rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 1.5rem;
-            margin-bottom: 0.5rem;
-            border-bottom: 2px solid var(--accent);
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: 4px;
-            font-weight: 700;
+            margin-bottom: 10px;
         }
 
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+        .modal-section p {
             font-size: 0.95rem;
-            margin-bottom: 1rem;
+            white-space: pre-line;
         }
 
-        .stat-item strong {
-            color: var(--text-muted);
-            font-weight: 500;
+        /* AI Prompt Box */
+        .prompt-box {
+            background-color: var(--bg-pastel-blue);
+            border: 1.5px solid var(--border-color);
+            border-radius: 6px;
+            padding: 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.85rem;
+            word-break: break-word;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            background-color: var(--card-bg);
+            color: var(--text-black);
+            border: 2px solid var(--border-color);
+            padding: 6px 14px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--bg-pastel-blue);
+        }
+
+        @media (max-width: 600px) {
+            .modal-header {
+                flex-direction: column;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -289,61 +250,77 @@
 
     <header>
         <h1>Garden of Eden</h1>
-        <p style="color: var(--text-muted);">OC Archive</p>
+        <p>Original Character Archive</p>
     </header>
 
-    <!-- Faction Filters -->
-    <div class="filter-nav">
-        <button class="filter-btn active" onclick="filterSelection('all')">All OCs</button>
-        <button class="filter-btn" onclick="filterSelection('protagonist')">Modern Ocs</button>
-        <button class="filter-btn" onclick="filterSelection('antagonist')">Fantasy Ocs</button>
-        <button class="filter-btn" onclick="filterSelection('neutral')">Art</button>
-    </div>
+    <main class="archive-grid" id="cardGrid"></main>
 
-    <!-- Character Grid -->
-    <div class="character-grid">
-
-        <!-- Character 1 Card -->
-        <div class="char-card protagonist" onclick="openModal('char-eve')">
-            <div class="char-img-container">
-                <img src="assets/avatars/Eveblueapple.png" alt="Eve" class="char-img" onerror="this.src='https://placeholder.com'">
-            </div>
-            <div class="char-info">
-                <h2 class="char-name">Eve</h2>
-                <div class="char-meta">Age ?? • Vampire • Pharmecutical Secretary</div>
-                <p class="char-desc">A mysterious woman with a stoic disposition. She is devoted to her boss, the CEO, and will do whatever is necessary for he and his company.</p>
-                <div class="char-tags">
-                    <span class="tag">Silver Hair</span>
-                    <span class="tag">Dutiful Secretary</span>
+    <!-- Expanded Modal -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
+        <div class="modal-card">
+            <button class="close-btn" onclick="closeModal()">✕</button>
+            
+            <div class="modal-header">
+                <img id="modalImg" class="modal-img" src="" alt="Character Portrait">
+                <div class="modal-title-area">
+                    <div class="card-subtitle" id="modalRole"></div>
+                    <h2 id="modalName"></h2>
+                    <ul class="card-basic-list" id="modalBasicInfo"></ul>
                 </div>
             </div>
-        </div>
 
-        <!-- Character 2 Card -->
-        <div class="char-card antagonist" onclick="openModal('char-楚岚啸')">
-            <div class="char-img-container">
-                <img src="assets/avatars/Battle 1.webp" alt="楚岚啸" class="char-img" onerror="this.src='https://placeholder.com'">
+            <div class="modal-section">
+                <h3>Backstory</h3>
+                <p id="modalBackstory"></p>
             </div>
-            <div class="char-info">
-                <h2 class="char-name">楚岚啸</h2>
-                <div class="char-meta">Age 27 • Tiger Guardian • Wandering Mercenary</div>
-                <p class="char-desc">A man saved from execution at the hands of corrupted officials by the guardian spirit of a tiger god. beneath his calm, reserved exterior lies an explosive, martial instinct.</p>
-                <div class="char-tags">
-                    <span class="tag">Lone Traveler</span>
-                    <span class="tag">Guardian Tiger Spirit</span>
-                </div>
+
+            <div class="modal-section">
+                <h3>AI Generation Prompt</h3>
+                <div class="prompt-box" id="modalPrompt"></div>
+                <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">Copy Prompt</button>
             </div>
         </div>
-
     </div>
 
-    <!-- --- POPUP MODALS DATA REGISTRY --- -->
-    
-    <!-- Alice's Expanded Profile Modal -->
-    <div id="char-eve" class="modal-overlay" onclick="closeModal(event, this)">
-        <div class="modal-container">
-            <button class="close-btn" onclick="document.getElementById('char-eve').classList.remove('open')">&times;</button>
-            <div class="modal-content">
-                <div class="modal-left">
-                    
-                 
+    <script>
+        // ==========================================
+        // EDIT YOUR CHARACTER DATA BELOW
+        // ==========================================
+        const characters = [
+            {
+                name: "Eve",
+                role: "Title / Archetype",
+                image: "https://imgur.com/Riq9KFJ",
+                basicInfo: {
+                    "Age": "Unknown",
+                    "Origin": "Eden",
+                    "Traits": "Curious, serene, observant"
+                },
+                backstory: "Write Eve's full backstory here. You can write multiple paragraphs and they will format cleanly when the card expands.",
+                aiPrompt: "1girl, solo, Eve, long hair, soft lighting, pastel aesthetic, highres, masterpiece"
+            },
+            {
+                name: "楚岚啸 (Chu Lanxiao)",
+                role: "Wuxia Wanderer",
+                image: "https://imgur.com/DfT9UEw",
+                basicInfo: {
+                    "Weapon": "Zhanmadao (Horse Cleaver)",
+                    "Spirit": "Guardian Tiger",
+                    "Traits": "Quiet, dutiful, brave"
+                },
+                backstory: "A quiet yet dutiful rogue wanderer of the Jianghu, carrying a heavy single-edged Zhanmadao across his back and bound to the spirit of a mountain tiger.",
+                aiPrompt: "1boy, solo, Chinese swordsman, Zhanmadao strapped to back, traditional wuxia robes, mountain mist, cinematic lighting, highres"
+            },
+            {
+                name: "Rhea",
+                role: "Title / Archetype",
+                image: "https://imgur.com/hI4LCnh",
+                basicInfo: {
+                    "Age": "24",
+                    "Origin": "Mediterranean",
+                    "Traits": "Graceful, resolute"
+                },
+                backstory: "Write Rhea's full backstory here.",
+                aiPrompt: "1girl, solo, Rhea, flowing fabric, olive trees, warm sunlight, detailed illustration, highres"
+            },
+            {
