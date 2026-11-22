@@ -1,310 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Garden of Eden</title>
-    <style>
-        :root {
-            --bg-pastel-blue: #EBF5FB;
-            --card-bg: #FFFFFF;
-            --card-hover: #F8FCFF;
-            --text-black: #111111;
-            --text-muted: #444444;
-            --border-color: #5D8AA8;
-            --accent-tint: #D6EAF8;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: var(--bg-pastel-blue);
-            color: var(--text-black);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            padding: 40px 20px;
-        }
-
-        header {
-            text-align: center;
-            max-width: 800px;
-            margin: 0 auto 40px auto;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            letter-spacing: 1px;
-            font-weight: 700;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-top: 5px;
-        }
-
-        .archive-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 24px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .oc-card {
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .oc-card:hover {
-            transform: translateY(-4px);
-            background-color: var(--card-hover);
-            box-shadow: 0 6px 14px rgba(93, 138, 168, 0.25);
-        }
-
-        .card-img {
-            width: 100%;
-            height: 240px;
-            object-fit: cover;
-            background-color: var(--accent-tint);
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .card-compact-body {
-            padding: 18px;
-        }
-
-        .card-compact-body h2 {
-            font-size: 1.35rem;
-            margin-bottom: 4px;
-        }
-
-        .card-subtitle {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--border-color);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 10px;
-        }
-
-        .card-basic-list {
-            list-style: none;
-            font-size: 0.9rem;
-        }
-
-        .card-basic-list li {
-            margin-bottom: 3px;
-        }
-
-        .click-hint {
-            margin-top: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-decoration: underline;
-            color: var(--text-black);
-        }
-
-        /* Modal Overlay */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background-color: rgba(17, 17, 17, 0.55);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-card {
-            background-color: var(--card-bg);
-            border: 3px solid var(--border-color);
-            border-radius: 10px;
-            max-width: 750px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 30px;
-            position: relative;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 18px;
-            right: 20px;
-            background: var(--bg-pastel-blue);
-            border: 2px solid var(--border-color);
-            color: var(--text-black);
-            font-size: 1.1rem;
-            font-weight: bold;
-            width: 34px;
-            height: 34px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .modal-header {
-            display: flex;
-            gap: 24px;
-            align-items: center;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 20px;
-            margin-bottom: 20px;
-        }
-
-        .modal-img {
-            width: 140px;
-            height: 140px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid var(--border-color);
-            background-color: var(--accent-tint);
-            flex-shrink: 0;
-        }
-
-        .modal-section {
-            margin-bottom: 22px;
-        }
-
-        .modal-section h3 {
-            font-size: 1.05rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 4px;
-            margin-bottom: 10px;
-        }
-
-        .prompt-box {
-            background-color: var(--bg-pastel-blue);
-            border: 1.5px solid var(--border-color);
-            border-radius: 6px;
-            padding: 14px;
-            font-family: monospace;
-            font-size: 0.85rem;
-            word-break: break-word;
-            margin-bottom: 10px;
-        }
-
-        .copy-btn {
-            background-color: var(--card-bg);
-            color: var(--text-black);
-            border: 2px solid var(--border-color);
-            padding: 6px 14px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        @media (max-width: 600px) {
-            .modal-header { flex-direction: column; text-align: center; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garden of Eden</title>
+<style>
+  :root {
+    --bg-pastel-blue: #EBF5FB;
+    --card-bg: #FFFFFF;
+    --card-hover: #F8FCFF;
+    --text-black: #111111;
+    --text-muted: #444444;
+    --border-color: #5D8AA8;
+    --accent-tint: #D6EAF8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background-color: var(--bg-pastel-blue); color: var(--text-black); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; padding: 40px 20px; }
+  header { text-align: center; max-width: 800px; margin: 0 auto 40px auto; padding-bottom: 20px; border-bottom: 2px solid var(--border-color); }
+  header h1 { font-size: 2.5rem; letter-spacing: 1px; font-weight: 700; }
+  header p { color: var(--text-muted); font-size: 0.95rem; margin-top: 5px; }
+  .archive-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; max-width: 1100px; margin: 0 auto; }
+  .oc-card { background-color: var(--card-bg); border: 2px solid var(--border-color); border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; display: flex; flex-direction: column; }
+  .oc-card:hover { transform: translateY(-4px); background-color: var(--card-hover); box-shadow: 0 6px 14px rgba(93, 138, 168, 0.25); }
+  .card-img { width: 100%; height: 240px; object-fit: cover; background-color: var(--accent-tint); border-bottom: 2px solid var(--border-color); }
+  .card-compact-body { padding: 18px; }
+  .card-compact-body h2 { font-size: 1.35rem; margin-bottom: 4px; }
+  .card-subtitle { font-size: 0.85rem; font-weight: 600; color: var(--border-color); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .card-basic-list { list-style: none; font-size: 0.9rem; }
+  .card-basic-list li { margin-bottom: 3px; }
+  .click-hint { margin-top: 12px; font-size: 0.8rem; font-weight: 600; text-decoration: underline; color: var(--text-black); }
+  .modal-overlay { display: none; position: fixed; inset: 0; background-color: rgba(17, 17, 17, 0.55); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+  .modal-overlay.active { display: flex; }
+  .modal-card { background-color: var(--card-bg); border: 3px solid var(--border-color); border-radius: 10px; max-width: 750px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 30px; position: relative; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25); }
+  .close-btn { position: absolute; top: 18px; right: 20px; background: var(--bg-pastel-blue); border: 2px solid var(--border-color); color: var(--text-black); font-size: 1.1rem; font-weight: bold; width: 34px; height: 34px; border-radius: 6px; cursor: pointer; }
+  .modal-header { display: flex; gap: 24px; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 20px; margin-bottom: 20px; }
+  .modal-img { width: 140px; height: 140px; object-fit: cover; border-radius: 8px; border: 2px solid var(--border-color); background-color: var(--accent-tint); flex-shrink: 0; }
+  .modal-section { margin-bottom: 22px; }
+  .modal-section h3 { font-size: 1.05rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border-color); padding-bottom: 4px; margin-bottom: 10px; }
+  .modal-section p { white-space: pre-line; }
+  .prompt-box { background-color: var(--bg-pastel-blue); border: 1.5px solid var(--border-color); border-radius: 6px; padding: 14px; font-family: monospace; font-size: 0.85rem; word-break: break-word; margin-bottom: 10px; }
+  .copy-btn { background-color: var(--card-bg); color: var(--text-black); border: 2px solid var(--border-color); padding: 6px 14px; font-size: 0.85rem; font-weight: 600; border-radius: 5px; cursor: pointer; }
+  @media (max-width: 600px) { .modal-header { flex-direction: column; text-align: center; } }
+</style>
 </head>
 <body>
 
-    <header>
-        <h1>Garden of Eden</h1>
-        <p>Original Character Archive</p>
-    </header>
+<header>
+  <h1>Garden of Eden</h1>
+  <p>Original Character Archive</p>
+</header>
 
-    <main class="archive-grid">
-        <!-- 1. EVE -->
-        <div class="oc-card" onclick="openModal('modal-eve')">
-            <img class="card-img" src="https://i.imgur.com/gjQRGpE.jpeg" alt="Eve">
-            <div class="card-compact-body">
-                <div class="card-subtitle">Title / Archetype</div>
-                <h2>Eve</h2>
-                <ul class="card-basic-list">
-                    <li><strong>Age:</strong> Unknown</li>
-                    <li><strong>Origin:</strong> Eden</li>
-                    <li><strong>Traits:</strong> Curious, serene</li>
-                </ul>
-                <div class="click-hint">Click to expand →</div>
-            </div>
-        </div>
+<main class="archive-grid" id="grid"></main>
 
-        <!-- 2. 楚岚啸 -->
-        <div class="oc-card" onclick="openModal('modal-chulanxiao')">
-            <img class="card-img" src="https://i.imgur.com/X0eVd4O.jpeg" alt="楚岚啸">
-            <div class="card-compact-body">
-                <div class="card-subtitle">Title / Archetype</div>
-                <h2>楚岚啸</h2>
-                <ul class="card-basic-list">
-                    <li><strong>Age:</strong> Unknown</li>
-                    <li><strong>Origin:</strong> Unknown</li>
-                    <li><strong>Traits:</strong> Quiet, dutiful</li>
-                </ul>
-                <div class="click-hint">Click to expand →</div>
-            </div>
-        </div>
+<div class="overlay modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-card">
+    <button class="close-btn" onclick="closeModal()">✕</button>
+    <div class="modal-header">
+      <img class="modal-img" id="mImg" referrerpolicy="no-referrer" src="" alt="">
+      <div>
+        <div class="card-subtitle" id="mRole"></div>
+        <h2 id="mName" style="font-size:1.7rem;margin-bottom:6px;"></h2>
+        <ul class="card-basic-list" id="mInfo"></ul>
+      </div>
+    </div>
+    <div class="modal-section">
+      <h3>Backstory</h3>
+      <p id="mStory"></p>
+    </div>
+    <div class="modal-section">
+      <h3>AI Generation Prompt</h3>
+      <div class="prompt-box" id="mPrompt"></div>
+      <button class="copy-btn" id="copyBtn" onclick="copyText()">Copy Prompt</button>
+    </div>
+  </div>
+</div>
 
-        <!-- 3. RHEA -->
-        <div class="oc-card" onclick="openModal('modal-rhea')">
-            <img class="card-img" src="https://i.imgur.com/oGS0qYM.jpeg" alt="Rhea">
-            <div class="card-compact-body">
-                <div class="card-subtitle">Title / Archetype</div>
-                <h2>Rhea</h2>
-                <ul class="card-basic-list">
-                    <li><strong>Age:</strong> Unknown</li>
-                    <li><strong>Origin:</strong> Unknown</li>
-                    <li><strong>Traits:</strong> Graceful, resolute</li>
-                </ul>
-                <div class="click-hint">Click to expand →</div>
-            </div>
-        </div>
+<script>
+const OCs = [
+  {
+    name: "Eve",
+    role: "Title / Archetype",
+    img: "https://imgur.com",
+    info: { "Age": "Unknown", "Status": "Single (?)", "Traits": "Curious, serene, Dutiful" },
+    story: "Write Eve's full backstory here.",
+    prompt: "1girl, solo, Eve, silver bob hair, holographic choker, pastel aesthetic, soft lighting, masterpiece"
+  },
+  {
+    name: "楚岚啸",
+    role: "Title / Archetype",
+    img: "https://imgur.com",
+    info: { "Age": "Unknown", "Origin": "Unknown", "Traits": "Quiet, dutiful" },
+    story: "Write 楚岚啸's full backstory here.",
+    prompt: "1boy, solo, 楚岚啸, black hair topknot, yellow eyes, traditional robes, rain, masterpiece"
+  },
+  {
+    name: "Rhea",
+    role: "Title / Archetype",
+    img: "https://imgur.com",
+    info: { "Age": "Unknown", "Origin": "Unknown", "Traits": "Graceful, resolute" },
+    story: "Write Rhea's full backstory here.",
+    prompt: "1girl, solo, Rhea, wavy white hair with pearls, glowing blue eyes, pearl earrings, masterpiece"
+  },
+  {
+    name: "Juliette",
+    role: "Secret Agent",
+    img: "https://i.imgur.com/vNvW8pL.jpeg",
+    info: { "Age": "Unknown", "Origin": "Unknown", "Traits": "Composed, sharp, covert" },
+    story: "Write Juliette's full backstory here.",
+    prompt: "1girl, solo, Juliette, wavy red hair, blue eyes, black choker, silenced pistol, dramatic shadows, masterpiece"
+  },
+  {
+    name: "Leonidas",
+    role: "Title / Archetype",
+    img: "https://i.imgur.com/YvKjmCx.jpeg",
+    info: { "Age": "Unknown", "Origin": "Unknown", "Traits": "Stoic, protective" },
+    story: "Write Leonidas's full backstory here.",
+    prompt: "1boy, solo, Leonidas, burgundy hair, neck tattoo, gold patterned tie, confident smirk, masterpiece"
+  },
+  {
+    name: "Amélie",
+    role: "Title / Archetype",
+    img: "https://i.imgur.com/0pEAieU.jpeg",
+    info: { "Age": "Unknown", "Origin": "Unknown", "Traits": "Artistic, gentle" },
+    story: "Write Amélie's full backstory here.",
+    prompt: "1girl, solo, Amélie, dark curly hair, blue eyes, chocolate hair clip, pink ruffled dress, masterpiece"
+  },
+  {
+    name: "Amamiya Seiu",
+    role: "Title / Archetype",
+    img: "https://i.imgur.com/wJyIiPI.jpeg",
+    info: { "Age": "Unknown", "Origin": "Unknown", "Traits": "Calm, observant" },
+    story: "Write Amamiya Seiu's full backstory here.",
+    prompt: "1boy, solo, Amamiya Seiu, split blue and grey hair, surgical mask, lab coat, red vial, masterpiece"
+  }
+];
 
-        <!-- 4. LEONIDAS -->
-        <div class="oc-card" onclick="openModal('modal-leonidas')">
-            <img class="card-img" src="https://i.imgur.com/YvKjmCx.jpeg" alt="Leonidas">
-            <div class="card-compact-body">
-                <div class="card-subtitle">Title / Archetype</div>
-                <h2>Leonidas</h2>
-                <ul class="card-basic-list">
-                    <li><strong>Age:</strong> Unknown</li>
-                    <li><strong>Origin:</strong> Unknown</li>
-                    <li><strong>Traits:</strong> Stoic, protective</li>
-                </ul>
-                <div class="click-hint">Click to expand →</div>
-            </div>
-        </div>
+const grid = document.getElementById("grid");
+OCs.forEach((c, i) => {
+  const list = Object.entries(c.info).map(([k, v]) => `<li><strong>${k}:</strong> ${v}</li>`).join("");
+  grid.innerHTML += `<div class="oc-card" onclick="openModal(${i})"><img class="card-img" referrerpolicy="no-referrer" src="${c.img}" alt="${c.name}"><div class="card-compact-body"><div class="card-subtitle">${c.role}</div><h2>${c.name}</h2><ul class="card-basic-list">${list}</ul><div class="hint click-hint">Click to expand →</div></div></div>`;
+});
 
-        <!-- 5. AMÉLIE -->
-        <div class="oc-card" onclick="openModal('modal-amelie')">
-            <img class="card-img" src="https://i.imgur.com/0pEAieU.jpeg" alt="Amélie">
-            <div class="card-compact-body">
-                <div class="card-subtitle">Title / Archetype</div>
-                <h2>Amélie</h2>
-                <ul class="card-basic-list">
-                    <li><strong>Age:</strong> Unknown</li>
-                    <li><strong>Origin:</strong> Unknown</li>
-                    <li><strong>Traits:</strong> Artistic, gentle</li>
-                </ul>
-                <div class="click-hint">Click to expand →</div>
-            </div>
-        </div>
-
-        <!-- 6. AMAMIYA SEIU -->
-        <div class="oc-card" onclick="openModal('modal-seiu')">
-            <img class="card-img" src="https://i.imgur.com/wJyIiPI.jpeg" alt="Amamiya Seiu">
-            <div class="card-compact-body">
-                <div class="card-subtitle">Title / Archetype</div>
+function openModal(i) {
+  const c = OCs[i];
+  document.getElementById("mImg").src = c.img;
+  document.getElementById("mRole").textContent = c.role;
+  document.getElementById("mName").textContent = c.name;
+  document.getElementById("mInfo").innerHTML = Object.entries(c.info).map(([k, v]) => `<li><strong>${k}:</strong> ${v}</li>`).join("");
+  document.getElementById("mStory").textContent = c.story;
+  document.getElementById("mPrompt").textContent = c.prompt;
+  document.getElementById("copyBtn").textContent = "Copy Prompt";
+  document.getElementById("modalOverlay").classList.add("active");
+}
+function closeModal() { document.getElementById("modalOverlay").classList.remove("active"); }
+function copyText() {
+  navigator.clipboard.writeText(document.getElementById("mPrompt").textContent);
+  const btn = document.getElementById("copyBtn");
+  btn.textContent = "Copied!";
+  setTimeout(() => btn.textContent = "Copy Prompt", 2000);
+}
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+</script>
+</body>
+</html>
